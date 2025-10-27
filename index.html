@@ -100,6 +100,8 @@
       <select id="mode">
         <option value="pro">Pro (ton sérieux)</option>
         <option value="chaleureux">Chaleureux (ton humain)</option>
+        <option value="coach">Coach Business Sophie</option>
+        <option value="cabinet_osteo">Cabinet Ostéo Duval</option>
       </select>
     </div>
 
@@ -138,6 +140,9 @@
       box.appendChild(el);
       box.scrollTop = box.scrollHeight;
     }
+    // Message d'accueil au chargement
+    appendBot("Bonjour 👋 Je suis l’assistant . Posez-moi votre question ou dites-moi ce dont vous avez besoin.");
+
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
