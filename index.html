@@ -1,189 +1,355 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Assistant IA</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Assistant IA Démo</title>
 
-<style>
-:root {
-  --bg: #0f0c29;
-  --primary: #a855f7;
-  --bubble-user: #ffffff;
-  --bubble-bot: #2d1b69;
-}
+  <!-- Design system simple via CSS variables -->
+  <style>
+    :root{
+      --bg: #faf9ff;
+      --bg-grad1:#f4f0ff;
+      --bg-grad2:#ffffff;
+      --card:#ffffff;
+      --text:#0f1222;
+      --muted:#667085;
+      --primary:#7c3aed;        /* mauve */
+      --primary-600:#6d28d9;
+      --primary-100:#ede9fe;
+      --ring:#e9d5ff;
+      --success:#10b981;
+      --danger:#ef4444;
+      --border:#ececf3;
+      --shadow: 0 10px 30px rgba(58,16,124,.12);
+      --radius:18px;
+    }
 
-body {
-  background: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  height: 100vh; margin:0;
-  font-family: Arial, sans-serif;
-  color:white;
-}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(1000px 600px at 20% 10%, var(--bg-grad1), transparent),
+                  radial-gradient(1000px 600px at 80% 0%, var(--bg-grad1), transparent),
+                  var(--bg);
+    }
 
-.container {
-  width: 420px;
-  background: rgba(255,255,255,0.1);
-  padding: 22px;
-  border-radius: 14px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 0 25px rgba(168,85,247,.4);
-}
+    .wrap{
+      min-height:100%;
+      padding:24px;
+      display:grid;
+      place-items:center;
+    }
 
-h2 { text-align: center; margin-top: 0; }
+    .shell{
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 960px){
+      .shell{grid-template-columns: 1fr}
+    }
 
-#messages {
-  height: 380px;
-  overflow-y: auto;
-  background: rgba(255,255,255,0.08);
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
-}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
 
-.row { display: flex; margin-bottom: 10px; }
+    .side{
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      position:sticky;
+      top:24px;
+      height:max-content;
+    }
 
-.bubble {
-  padding: 10px 14px;
-  border-radius: 12px;
-  max-width: 80%;
-  line-height: 1.4;
-}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      background: var(--primary-100);
+      color: var(--primary);
+      border: 1px solid var(--ring);
+      padding:6px 10px; border-radius: 999px;
+      font-weight:600; font-size:12px; letter-spacing:.2px;
+    }
 
-.user { background: var(--bubble-user); color:#111; margin-left:auto; }
-.bot { background: var(--bubble-bot); color:white; margin-right:auto; }
+    .profile{
+      padding:16px;
+      border:1px dashed var(--ring);
+      border-radius:12px;
+      background:linear-gradient(180deg,#fff, #faf7ff);
+    }
+    .profile h3{margin:0 0 6px 0; font-size:16px}
+    .profile p{margin:2px 0; color:var(--muted); font-size:14px}
 
-/* Animation 3 points */
-.typing { display: inline-flex; gap: 4px; padding:10px; }
-.dot-anim {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--primary);
-  animation: blink 1.4s infinite both;
-}
-.dot-anim:nth-child(2){ animation-delay:.2s; }
-.dot-anim:nth-child(3){ animation-delay:.4s; }
+    .select-row{
+      display:flex; gap:10px; align-items:center;
+      padding:10px; border-radius:12px; border:1px solid var(--border);
+      background:#fff;
+    }
+    label{font-size:13px; color:var(--muted)}
+    select{
+      appearance:none; width:100%;
+      padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+      background:#fff; font-weight:600; color:var(--text);
+      outline: none;
+    }
+    select:focus{box-shadow: 0 0 0 4px var(--ring); border-color:var(--primary)}
 
-@keyframes blink {
-  0% { opacity:.2; transform: translateY(0); }
-  20% { opacity:1; transform: translateY(-3px); }
-  100% { opacity:.2; transform: translateY(0); }
-}
+    .chat{
+      display:flex; flex-direction:column;
+      height: min(78vh, 780px);
+      padding:16px;
+    }
 
-input, select {
-  width: 100%; padding:10px; margin-top:10px;
-  border-radius:8px; border:none; outline:none;
-}
+    .chat-header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:8px 12px 14px 12px;
+      border-bottom:1px solid var(--border);
+    }
+    .chat-header h2{margin:0; font-size:18px}
+    .status{
+      display:flex; align-items:center; gap:8px; color:var(--muted); font-size:13px;
+    }
+    .dot{width:8px; height:8px; background:var(--success); border-radius:50%}
 
-button {
-  width: 100%;
-  background: var(--primary);
-  color:white;
-  font-size:15px;
-  padding:10px;
-  border:none;
-  border-radius: 8px;
-  margin-top:10px;
-  cursor:pointer;
-}
+    .messages{
+      flex:1; overflow:auto; padding:16px 6px; scroll-behavior:smooth;
+    }
 
-button:hover { opacity: .8; }
+    .bubble{
+      max-width: 70%;
+      padding:12px 14px;
+      margin:10px 0;
+      border-radius:16px;
+      line-height:1.45;
+      font-size:15px;
+      box-shadow: 0 4px 16px rgba(17,24,39, .06);
+      border:1px solid var(--border);
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+    .bot{ background:#fff; }
+    .user{
+      margin-left:auto;
+      background: linear-gradient(180deg, var(--primary), var(--primary-600));
+      color:white; border: none;
+    }
+    .avatar{
+      width:30px; height:30px; border-radius:50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      margin-right:8px; font-weight:700;
+    }
+    .row{display:flex; align-items:flex-end; gap:8px}
+    .row.right{justify-content:flex-end}
 
-</style>
+    .composer{
+      display:flex; gap:10px; padding:12px; border-top:1px solid var(--border);
+    }
+    .composer input{
+      flex:1; padding:14px 16px; border-radius:12px; border:1px solid var(--border);
+      outline:none; font-size:15px; background:#fff;
+    }
+    .composer input:focus{box-shadow:0 0 0 4px var(--ring); border-color:var(--primary)}
+    .btn{
+      padding:12px 16px; border-radius:12px; border:1px solid var(--primary);
+      background: var(--primary); color:white; font-weight:700;
+      cursor:pointer;
+      transition: transform .06s ease, box-shadow .2s ease;
+      box-shadow: 0 10px 16px rgba(124,58,237,.22);
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .btn:disabled{opacity:.6; cursor:not-allowed; box-shadow:none}
+    .hint{font-size:12px; color:var(--muted); margin-top:4px}
+
+    /* === Animation des 3 points (typing) === */
+    .typing{
+      display:inline-flex;
+      gap:4px;
+      padding:10px 12px;
+    }
+    .dot-anim{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--primary);
+      animation: blink 1.4s infinite both;
+    }
+    .dot-anim:nth-child(2){ animation-delay:.2s; }
+    .dot-anim:nth-child(3){ animation-delay:.4s; }
+    @keyframes blink{
+      0%{opacity:.2; transform:translateY(0);}
+      20%{opacity:1; transform:translateY(-3px);}
+      100%{opacity:.2; transform:translateY(0);}
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
-<h2>Assistant IA</h2>
+  <div class="wrap">
+    <div class="shell">
+      <!-- Colonne gauche (infos + modes) -->
+      <aside class="card side">
+        <span class="badge">Assistant IA • Démo</span>
 
-<select id="mode">
-  <option value="pro">Pro</option>
-  <option value="chaleureux">Chaleureux</option>
-  <option value="coach">Coach Business</option>
-  <option value="cabinet_osteo">Cabinet Ostéo</option>
-</select>
+        <div class="profile">
+          <h3 id="tenantName">Cabinet Martin Coaching</h3>
+          <p>• Tarif séance : <strong id="tenantPrice">80€ / h</strong></p>
+          <p>• Disponibilités : <strong id="tenantHours">Lun–Ven 9h–18h</strong></p>
+          <p>• Canaux : <strong id="tenantChannels">Visio & présentiel</strong></p>
+        </div>
 
-<div id="messages"></div>
+        <div class="select-row">
+          <label for="mode">Mode</label>
+          <select id="mode">
+            <option value="pro">Pro (ton sérieux)</option>
+            <option value="chaleureux">Chaleureux (humain)</option>
+            <option value="coach">Coach Business Sophie</option>
+            <option value="cabinet_osteo">Cabinet Ostéo Duval</option>
+          </select>
+        </div>
 
-<input id="input" placeholder="Pose ta question..." />
-<button id="send">Envoyer</button>
-</div>
+        <p class="hint">Astuce : change de mode pour montrer différentes “personas” clients sans toucher au code.</p>
+      </aside>
 
-<script>
-const msgBox = document.getElementById("messages");
-const input = document.getElementById("input");
-const send = document.getElementById("send");
-const modeSelect = document.getElementById("mode");
+      <!-- Colonne droite (chat) -->
+      <section class="card chat" aria-live="polite">
+        <div class="chat-header">
+          <h2>Assistant IA</h2>
+          <div class="status"><span class="dot"></span>En ligne</div>
+        </div>
 
-function addMessage(text, sender="bot") {
-  const row = document.createElement("div");
-  row.className="row";
-  const bubble=document.createElement("div");
-  bubble.className=`bubble ${sender}`;
-  bubble.innerText=text;
-  row.appendChild(bubble);
-  msgBox.appendChild(row);
-  msgBox.scrollTop=msgBox.scrollHeight;
-}
+        <div id="messages" class="messages"></div>
 
-/* Typing animation bubble */
-let typingBubble=null;
-function showTyping(){
-  typingBubble = document.createElement("div");
-  typingBubble.className="row";
-  const bubble = document.createElement("div");
-  bubble.className="bubble bot typing";
-  bubble.innerHTML = `
-    <span class="dot-anim"></span>
-    <span class="dot-anim"></span>
-    <span class="dot-anim"></span>
-  `;
-  typingBubble.appendChild(bubble);
-  msgBox.appendChild(typingBubble);
-  msgBox.scrollTop=msgBox.scrollHeight;
-}
+        <form id="chatForm" class="composer" autocomplete="off">
+          <input id="userInput" placeholder="Pose ta question…" />
+          <button id="sendBtn" class="btn" type="submit">Envoyer</button>
+        </form>
+      </section>
+    </div>
+  </div>
 
-function hideTyping(){
-  if(typingBubble){
-    typingBubble.remove();
-    typingBubble=null;
-  }
-}
+  <script>
+    // ——— Elements
+    const messagesEl = document.getElementById("messages");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("userInput");
+    const modeSelect = document.getElementById("mode");
+    const sendBtn = document.getElementById("sendBtn");
 
-/* Send message */
-async function sendMessage(){
-  const text = input.value.trim();
-  if(!text) return;
+    // ——— Helpers rendu
+    function appendBot(text){
+      const row = document.createElement("div");
+      row.className = "row";
+      const b = document.createElement("div");
+      b.className = "bubble bot";
+      b.textContent = text;
+      row.appendChild(b);
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    function appendUser(text){
+      const row = document.createElement("div");
+      row.className = "row right";
+      const b = document.createElement("div");
+      b.className = "bubble user";
+      b.textContent = text;
+      row.appendChild(b);
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
 
-  addMessage(text,"user");
-  input.value="";
+    // --- Animation "bot écrit"
+    let typingBubble=null;
+    function showTyping(){
+      typingBubble=document.createElement("div");
+      typingBubble.className="row";
+      const bubble=document.createElement("div");
+      bubble.className="bubble bot typing";
+      bubble.innerHTML=`
+        <span class="dot-anim"></span>
+        <span class="dot-anim"></span>
+        <span class="dot-anim"></span>
+      `;
+      typingBubble.appendChild(bubble);
+      messagesEl.appendChild(typingBubble);
+      messagesEl.scrollTop=messagesEl.scrollHeight;
+    }
+    function hideTyping(){
+      if(typingBubble){
+        typingBubble.remove();
+        typingBubble=null;
+      }
+    }
 
-  showTyping();
+    // ——— Message d’accueil
+    appendBot("Bonjour 👋 Je suis l’assistant. Pose-moi ta question ou choisis un mode pour tester une persona.");
 
-  const res = await fetch("/api/chat",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ userMessage:text, mode:modeSelect.value })
-  });
+    // ——— Tenants démo (facultatif : change dynamiquement le cartouche de gauche)
+    const tenants = {
+      pro:       { name:"Assistant Pro", price:"—", hours:"—", channels:"—" },
+      chaleureux:{ name:"Assistant Chaleureux", price:"—", hours:"—", channels:"—" },
+      coach:     { name:"Sophie Martin • Coaching", price:"80€ / h", hours:"Lun–Ven 9h–18h", channels:"Visio & présentiel (Lyon)" },
+      cabinet_osteo: { name:"Cabinet Ostéo Duval", price:"65€ / séance", hours:"Lun–Sam matin", channels:"Présentiel • Bruxelles" }
+    };
+    const nameEl = document.getElementById("tenantName");
+    const priceEl = document.getElementById("tenantPrice");
+    const hoursEl = document.getElementById("tenantHours");
+    const channelsEl = document.getElementById("tenantChannels");
 
-  hideTyping();
+    function refreshTenantCard(){
+      const t = tenants[modeSelect.value] || tenants.pro;
+      nameEl.textContent = t.name;
+      priceEl.textContent = t.price;
+      hoursEl.textContent = t.hours;
+      channelsEl.textContent = t.channels;
+    }
+    modeSelect.addEventListener("change", refreshTenantCard);
+    refreshTenantCard();
 
-  if(!res.ok){
-    addMessage("⚠️ Erreur serveur");
-    return;
-  }
+    // ——— Envoi
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const text = input.value.trim();
+      if(!text) return;
 
-  const data = await res.json();
-  addMessage(data.answer);
-}
+      appendUser(text);
+      input.value = "";
+      input.focus();
+      sendBtn.disabled = true;
 
-/* Button + Enter */
-send.onclick = sendMessage;
-input.addEventListener("keypress", e=>{
-  if(e.key==="Enter") sendMessage();
-});
+      // Affiche l'animation de saisie
+      showTyping();
 
-/* Message d'accueil */
-addMessage("👋 Salut&nbsp;! Je suis ton assistant. Comment puis-je t’aider aujourd’hui ?");
-</script>
+      try{
+        const res = await fetch("/api/chat", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ userMessage: text, mode: modeSelect.value })
+        });
+
+        // Retire l'animation
+        hideTyping();
+
+        if(!res.ok){
+          appendBot("⚠️ Erreur serveur. Réessaie dans un instant.");
+        }else{
+          const data = await res.json();
+          appendBot(data.answer || "(pas de réponse)");
+        }
+      }catch(err){
+        hideTyping();
+        appendBot("⚠️ Réseau indisponible.");
+      }finally{
+        sendBtn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
