@@ -188,6 +188,22 @@
       20%{opacity:1; transform:translateY(-3px);}
       100%{opacity:.2; transform:translateY(0);}
     }
+    /* —— Fix mobile (<= 960px) ————————————— */
+    @media (max-width: 960px){
+      .side{
+        position: static;
+        top: auto;
+        margin-bottom: 12px;
+      }
+
+      .chat{
+        height: calc(100dvh - 140px);
+      }
+
+      .messages{
+        padding: 12px 6px;
+      }
+    }
   </style>
 </head>
 
