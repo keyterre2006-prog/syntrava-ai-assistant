@@ -131,6 +131,18 @@
       .pricing{grid-template-columns:1fr}
     }
 
+      /* === Hotfix mobile: empêcher les débordements sur petits écrans === */
+    html, body{ overflow-x:hidden }
+    img, iframe, .grid, .card, .chat, .side{ max-width:100% }
+    .section .section-inner{ overflow:hidden }
+
+    @media (max-width: 600px){
+      /* Le conteneur de démo doit rester dans la carte blanche */
+      .chat{ height:auto }
+      .messages{ max-height:52vh }
+      .grid{ gap:12px }
+      .section .section-inner{ padding:16px }
+    }
   </style>
 </head>
 
