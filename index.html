@@ -430,11 +430,16 @@
       <footer>
         <div>Made with 💜 — SYNTRAVA</div>
         <div style="display:flex; gap:12px">
-          <a href="#legal" style="color:var(--muted); text-decoration:none">Mentions</a>
-          <a href="#legal" style="color:var(--muted); text-decoration:none">Politique RGPD</a>
+          <a href="#legal" class="legal-link" style="color:var(--muted); text-decoration:none">
+            Mentions
+          </a>
+          <a href="#legal" class="legal-link" style="color:var(--muted); text-decoration:none">
+            Politique RGPD
+          </a>
         </div>
       </footer>
-      <section id="legal" class="section">
+      
+      <section id="legal" class="section" style="display:none">
         <div class="section-inner">
           <h3>Mentions légales</h3>
           <p class="hint">
@@ -446,14 +451,13 @@
 
           <h3 style="margin-top:20px">Politique de confidentialité (RGPD)</h3>
           <p class="hint">
-            • Le chatbot ne stocke aucune donnée personnelle.<br>
-            • Les messages envoyés via le formulaire de contact sont transmis uniquement par email au responsable et ne sont pas archivés ailleurs.<br>
-            • Vous pouvez demander la suppression de vos données en envoyant un email à : 
+            • Le chatbot ne stocke pas de données personnelles en base de données.<br>
+            • Les messages envoyés via le formulaire de contact sont transmis uniquement par email au responsable et ne sont pas revendus.<br>
+            • Vous pouvez demander la suppression de vos données en écrivant à
             <a href="mailto:syntrava.dev@gmail.com" style="color:var(--primary)">syntrava.dev@gmail.com</a>.
           </p>
         </div>
       </section>
-
 
 
     </div>
@@ -470,7 +474,25 @@
       if(openChatBtn) openChatBtn.style.display = 'none';
       if(chatWrapper) chatWrapper.classList.add('shown');
       if(!chatInitialized) { initChat(); chatInitialized = true; }
+
+      // ======== Affichage / masquage de la section légale ========
+      const legalSection = document.getElementById("legal");
+      const legalLinks = document.querySelectorAll(".legal-link");
+
+      legalLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+
+          const isHidden = legalSection.style.display === "none" || legalSection.style.display === "";
+          legalSection.style.display = isHidden ? "block" : "none";
+
+          if (isHidden) {
+            legalSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
     });
+
 
     // ======== Logique du chat (identique à ton code) ========
     function initChat(){
