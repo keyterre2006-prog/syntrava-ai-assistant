@@ -1310,7 +1310,10 @@
         try {
           const res = await fetch("/api/chat", {
             method:"POST",
-            headers:{ "Content-Type":"application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-CLIENT": "syntrava-vitrine-1"
+            },
             body: JSON.stringify({
               userMessage: text,
               mode: modeSelect.value,
