@@ -1162,6 +1162,10 @@
     const openChatBtn = document.getElementById("openChat");
     let chatInitialized = false;
 
+    // 👉 Mémoire de la conversation côté front
+    // Chaque entrée : { role: "user" | "assistant", content: "..." }
+    let conversationHistory = [];
+
     document.addEventListener("DOMContentLoaded", () => {
       if (openChatBtn) openChatBtn.style.display = "none";
       if (chatWrapper) chatWrapper.classList.add("shown");
@@ -1196,6 +1200,8 @@
       const modeSelect = document.getElementById("mode");
       const sendBtn = document.getElementById("sendBtn");
 
+      if (!messagesEl || !form || !input || !modeSelect || !sendBtn) return;
+
       function appendBot(text) {
         const row = document.createElement("div");
         row.className = "row";
@@ -1225,7 +1231,10 @@
         typingBubble.className = "row";
         const bubble = document.createElement("div");
         bubble.className = "bubble bot typing";
-        bubble.innerHTML = `<span class="dot-anim"></span><span class="dot-anim"></span><span class="dot-anim"></span>`;
+        bubble.innerHTML = `
+          <span class="dot-anim"></span>
+          <span class="dot-anim"></span>
+          <span class="dot-anim"></span>`;
         typingBubble.appendChild(bubble);
         messagesEl.appendChild(typingBubble);
         messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -1240,10 +1249,10 @@
 
       // Cartouche de gauche dynamique
       const tenants = {
-        pro:       { name:"Assistant Pro", price:"—", hours:"—", channels:"—" },
-        chaleureux:{ name:"Assistant Chaleureux", price:"—", hours:"—", channels:"—" },
-        coach:     { name:"Sophie Martin • Coaching", price:"80€ / h", hours:"Lun–Ven 9h–18h", channels:"Visio & présentiel (Lyon)" },
-        cabinet_osteo: { name:"Cabinet Ostéo Duval", price:"65€ / séance", hours:"Lun–Sam matin", channels:"Présentiel • Bruxelles" }
+        pro:          { name:"Assistant Pro",            price:"—",          hours:"—",                      channels:"—" },
+        chaleureux:   { name:"Assistant Chaleureux",    price:"—",          hours:"—",                      channels:"—" },
+        coach:        { name:"Sophie Martin • Coaching", price:"80€ / h",  hours:"Lun–Ven 9h–18h",         channels:"Visio & présentiel (Lyon)" },
+        cabinet_osteo:{ name:"Cabinet Ostéo Duval",     price:"65€ / séance", hours:"Lun–Sam matin",       channels:"Présentiel • Bruxelles" }
       };
 
       const nameEl = document.getElementById("tenantName");
@@ -1253,24 +1262,33 @@
 
       function refreshTenantCard() {
         const t = tenants[modeSelect.value] || tenants.pro;
-        nameEl.textContent = t.name;
-        priceEl.textContent = t.price;
-        hoursEl.textContent = t.hours;
-        channelsEl.textContent = t.channels;
+        if (nameEl) nameEl.textContent = t.name;
+        if (priceEl) priceEl.textContent = t.price;
+        if (hoursEl) hoursEl.textContent = t.hours;
+        if (channelsEl) channelsEl.textContent = t.channels;
       }
 
       modeSelect.addEventListener("change", refreshTenantCard);
       refreshTenantCard();
 
-      // Message d'accueil
-      appendBot("Bonjour 👋 Je suis l’assistant. Pose-moi ta question ou choisis un mode pour tester une persona.");
+      // ===== Message d'accueil (et on l'ajoute à la mémoire) =====
+      const welcomeMessage =
+        "Bonjour 👋 Je suis l’assistant. Pose-moi ta question ou choisis un mode pour tester une persona.";
 
-      // Envoi
+      appendBot(welcomeMessage);
+
+      conversationHistory.push({
+        role: "assistant",
+        content: welcomeMessage
+      });
+
+      // ===== Envoi des messages =====
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const text = input.value.trim();
         if (!text) return;
 
+        // Afficher côté utilisateur
         appendUser(text);
         input.value = "";
         input.focus();
@@ -1281,16 +1299,37 @@
           const res = await fetch("/api/chat", {
             method:"POST",
             headers:{ "Content-Type":"application/json" },
-            body: JSON.stringify({ userMessage: text, mode: modeSelect.value })
+            body: JSON.stringify({
+              userMessage: text,
+              mode: modeSelect.value,
+              // 👉 On envoie tout l'historique au backend
+              history: conversationHistory
+            })
           });
+
           hideTyping();
+
           if (!res.ok) {
             appendBot("⚠️ Erreur serveur. Réessaie dans un instant.");
           } else {
             const data = await res.json();
-            appendBot(data.answer || "(pas de réponse)");
+            const botReply = data.answer || "(pas de réponse)";
+
+            // Afficher la réponse
+            appendBot(botReply);
+
+            // 🔁 On met à jour la mémoire APRÈS la réponse
+            conversationHistory.push({
+              role: "user",
+              content: text
+            });
+            conversationHistory.push({
+              role: "assistant",
+              content: botReply
+            });
           }
         } catch (err) {
+          console.error(err);
           hideTyping();
           appendBot("⚠️ Réseau indisponible.");
         } finally {
@@ -1299,5 +1338,6 @@
       });
     }
   </script>
+
 </body>
 </html>
