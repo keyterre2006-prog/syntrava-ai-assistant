@@ -904,11 +904,11 @@
               <div class="hero-card-side">
                 <div class="hero-stat">
                   <span>Temps de réponse moyen</span>
-                  <strong>&lt; 10 sec</strong>
+                  <strong>&lt; 2 sec</strong>
                 </div>
                 <div class="hero-stat">
                   <span>Questions gérées par l’IA</span>
-                  <strong>~ 60–70%</strong>
+                  <strong>~ 70–80%</strong>
                 </div>
                 <div class="hero-stat">
                   <span>Langues</span>
@@ -975,7 +975,10 @@
       <section class="section">
         <div class="section-inner">
           <h3 id="demo">Testez-le en direct 👇</h3>
-          <p class="hint">Essayez des questions types : "Quels sont vos horaires ?", "Comment suivre ma commande ?"</p>
+          <p class="hint">
+            Essayez des questions types : "Quels sont vos horaires ?", "Comment suivre ma commande ?".<br>
+            À gauche, changez de <strong>mode</strong> pour voir différents exemples (cabinet, coach, ton pro, etc.).
+          </p>
 
           <!-- Le chatbot (affiché par défaut) -->
           <div id="chatWrapper" class="shown">
@@ -986,6 +989,9 @@
 
                 <div class="profile">
                   <h3 id="tenantName">Cabinet Martin Coaching</h3>
+                  <p style="font-size:13px; color:var(--muted); margin-top:4px;">
+                    Exemple de client utilisant l’assistant.
+                  </p>
                   <p>• Tarif séance : <strong id="tenantPrice">80€ / h</strong></p>
                   <p>• Disponibilités : <strong id="tenantHours">Lun–Ven 9h–18h</strong></p>
                   <p>• Canaux : <strong id="tenantChannels">Visio & présentiel</strong></p>
@@ -994,10 +1000,10 @@
                 <div class="select-row" style="display:flex; gap:10px; align-items:center; padding:10px; border-radius:12px; border:1px solid var(--border); background:#fff">
                   <label for="mode">Mode</label>
                   <select id="mode">
-                    <option value="pro">Pro (ton sérieux)</option>
-                    <option value="chaleureux">Chaleureux (humain)</option>
-                    <option value="coach">Coach Business Sophie</option>
-                    <option value="cabinet_osteo">Cabinet Ostéo Duval</option>
+                    <option value="cabinet_osteo" selected>Exemple 1 · Cabinet d’ostéopathie</option>
+                    <option value="coach">Exemple 2 · Coach business</option>
+                    <option value="pro">Mode générique (pro)</option>
+                    <option value="chaleureux">Mode générique (chaleureux)</option>
                   </select>
                 </div>
 
