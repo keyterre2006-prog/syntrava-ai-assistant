@@ -63,8 +63,8 @@
     .ribbon {
       display:flex;
       justify-content:center;
-      gap:12px;
       align-items:center;
+      gap:8px;
       padding:8px 14px;
       border-radius:var(--pill-radius);
       background:linear-gradient(135deg, var(--primary-100), #ffffff);
@@ -72,9 +72,13 @@
       font-weight:700;
       font-size:13px;
       border:1px solid var(--ring);
-      width:max-content;
+      /* ⛔ on enlève max-content qui casse tout sur mobile */
+      width:100%;
+      max-width:650px;        /* pour éviter que ça s’étale trop sur grands écrans */
       margin:0 auto 18px;
       box-shadow:0 14px 30px rgba(124,58,237,.18);
+      flex-wrap:wrap;         /* ✅ autorise le retour à la ligne sur petits écrans */
+      text-align:center;
     }
 
     /* ===== Hero (base) ===== */
@@ -834,6 +838,15 @@
     .quick-contact-box a:hover {
       text-decoration:underline;
     }
+
+    @media (max-width: 480px) {
+      .ribbon {
+        padding:6px 10px;
+        font-size:12px;
+        gap:4px;
+      }
+    }
+
   </style>
 </head>
 
