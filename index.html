@@ -1326,13 +1326,13 @@
         chatInitialized = true;
       }
 
-      // ===== Scroll pour "Tester en direct" (simple & fiable) =====
+      // ===== Scroll pour "Tester en direct" (Mode + zone de chat visibles) =====
       const heroDemoBtn = document.getElementById("heroDemoBtn");
       if (heroDemoBtn) {
         heroDemoBtn.addEventListener("click", (e) => {
           e.preventDefault();
 
-          // On vise d'abord le sélecteur "Mode"
+          // On vise en priorité le sélecteur "Mode"
           const target =
             document.getElementById("mode") ||
             document.getElementById("demo-chat") ||
@@ -1340,14 +1340,21 @@
 
           if (!target) return;
 
-          // On centre la zone dans l'écran (ça devrait montrer "Mode" + zone de saisie)
+          // 1) on aligne "Mode" en haut de l'écran
           target.scrollIntoView({
             behavior: "smooth",
-            block: "center"
+            block: "start"
           });
+
+          // 2) puis on descend encore un peu pour bien voir la zone "Pose ta question / Envoyer"
+          setTimeout(() => {
+            window.scrollBy({
+              top: 80,          // tu peux tester 60 / 100 si tu veux ajuster finement
+              behavior: "smooth"
+            });
+          }, 400);              // laisse le temps au premier scroll de se finir
         });
       }
-
 
 
       // ======== Affichage / masquage de la section légale (2 liens, 2 blocs) ========
