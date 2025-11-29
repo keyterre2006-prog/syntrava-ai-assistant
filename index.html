@@ -1326,47 +1326,52 @@
         chatInitialized = true;
       }
 
-      // ===== Scroll spécial pour "Tester en direct" =====
+      // ===== Scroll pour "Tester en direct" =====
       const heroDemoBtn = document.getElementById("heroDemoBtn");
       if (heroDemoBtn) {
         heroDemoBtn.addEventListener("click", (e) => {
-          e.preventDefault(); // on gère le scroll nous-mêmes
-
           const isMobile =
             window.innerWidth <= 768 ||
             /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-          let targetEl;
-          let offset;
-
           if (isMobile) {
-            // 👉 Sur téléphone : viser la grille du chat (mode + chat)
-            targetEl =
+            // 📱 MOBILE : on vise la grille (mode + chat) avec un léger offset
+            e.preventDefault();
+
+            const target =
               document.getElementById("demo-grid") ||
-              document.getElementById("demo-chat");
-            offset = 60; // monte un chouia (augmente pour remonter plus)
+              document.getElementById("demo-chat") ||
+              document.getElementById("demo");
+
+            if (!target) return;
+
+            const rect = target.getBoundingClientRect();
+            const OFFSET = 80; // 👉 augmente pour que ça remonte un peu plus, diminue pour descendre
+            let y = rect.top + window.scrollY - OFFSET;
+            if (y < 0) y = 0;
+
+            window.scrollTo({
+              top: y,
+              behavior: "smooth"
+            });
           } else {
-            // 👉 Sur PC : viser le titre "Testez-le en direct 👇"
-            targetEl = document.getElementById("demo");
-            offset = 0; // pas de décalage
+            // 🖥️ DESKTOP : on va proprement sur le titre "Testez-le en direct 👇"
+            e.preventDefault();
+
+            const target = document.getElementById("demo");
+            if (!target) return;
+
+            const rect = target.getBoundingClientRect();
+            let y = rect.top + window.scrollY;
+            if (y < 0) y = 0;
+
+            window.scrollTo({
+              top: y,
+              behavior: "smooth"
+            });
           }
-
-          if (!targetEl) return;
-
-          const rect = targetEl.getBoundingClientRect();
-          let y = rect.top + window.scrollY - offset;
-          if (y < 0) y = 0;
-
-          window.scrollTo({
-            top: y,
-            behavior: "smooth"
-          });
         });
       }
-
-
-
-
 
       // ======== Affichage / masquage de la section légale (2 liens, 2 blocs) ========
       const legalSection = document.getElementById("legal");
@@ -1445,7 +1450,7 @@
           });
         });
       }
-    }); // 👈 ICI on ferme bien le DOMContentLoaded
+    }); // 👈 fin du DOMContentLoaded
 
     // ======== Logique du chat ========
     function initChat() {
@@ -1616,8 +1621,6 @@
       });
     }
   </script>
-
-
-
+  
 </body>
 </html>
