@@ -1337,31 +1337,30 @@
           if (isMobile) {
             e.preventDefault();
 
-            // On vise d'abord tout le bloc démo (mode + chat)
+            // On cible directement le bloc du chat
             const target =
-              document.getElementById("chatWrapper") ||
               document.getElementById("demo-chat") ||
+              document.getElementById("chatWrapper") ||
               document.getElementById("demo");
 
             if (target) {
-              // 1) on amène le bloc en haut de l'écran
-              target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-              });
+              const rect = target.getBoundingClientRect();
 
-              // 2) une fois le scroll fini, on descend encore un peu
-              setTimeout(() => {
-                window.scrollBy({
-                  top: 170,          // ← ajuste si tu veux plus/moins
-                  behavior: "smooth"
-                });
-              }, 500);               // délai pour laisser le premier scroll se faire
+              // ✨ Gros décalage pour que le haut du chat soit plus bas dans l’écran
+              const OFFSET = 220; // tu peux monter à 250/280 si tu veux encore plus bas
+              let y = rect.top + window.scrollY - OFFSET;
+              if (y < 0) y = 0;
+
+              window.scrollTo({
+                top: y,
+                behavior: "smooth"
+              });
             }
           }
-          // Desktop : le href="#demo" fait le boulot
+          // Desktop : on laisse l'ancre #demo faire son job (pas de preventDefault)
         });
       }
+
 
 
 
