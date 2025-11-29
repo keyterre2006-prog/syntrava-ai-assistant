@@ -1345,8 +1345,16 @@
             if (chatCard) {
               chatCard.scrollIntoView({
                 behavior: "smooth",
-                block: "center" // pour voir le Mode + la zone de saisie
+                block: "center"
               });
+
+              // ✨ Ajustement : remonter légèrement (vers le haut)
+              setTimeout(() => {
+                window.scrollBy({
+                  top: -70,  // monte légèrement (tu peux ajuster)
+                  behavior: "smooth"
+                });
+              }, 500); // laisse le temps au scrollIntoView de s’exécuter
             }
           } else {
             // 👉 Sur PC : on vise le titre "Testez-le en direct 👇"
