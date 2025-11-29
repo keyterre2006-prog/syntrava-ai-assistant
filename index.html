@@ -1329,7 +1329,7 @@
       // ===== Scroll spécial mobile pour "Tester en direct" =====
       const heroDemoBtn = document.getElementById("heroDemoBtn");
       if (heroDemoBtn) {
-        heroDemoBtn.addEventListener("click", (e) => {
+        heroDemoBtn.addEventListener("click", function (e) {
           const isMobile =
             window.innerWidth <= 768 ||
             /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -1339,37 +1339,38 @@
             return;
           }
 
-          // Mobile : on gère le scroll à la main
+          // Mobile : on gère le scroll nous-mêmes
           e.preventDefault();
 
-          const target =
+          // On vise directement le sélecteur "Mode"
+          const modeEl =
+            document.getElementById("mode") ||
             document.getElementById("demo-chat") ||
             document.getElementById("chatWrapper") ||
             document.getElementById("demo");
 
-          if (!target) return;
+          if (!modeEl) return;
 
-          // 1) on scrolle jusqu'au chat (CSS scroll-behavior:smooth fera l’animation)
-          target.scrollIntoView();
+          const rect = modeEl.getBoundingClientRect();
+          const absoluteY = rect.top + window.scrollY;
 
-          // 2) petit décalage supplémentaire vers le bas pour voir la zone de saisie
-          setTimeout(() => {
-            try {
-              window.scrollBy({
-                top: 180, // augmente si tu veux descendre encore plus
-                left: 0,
-                behavior: "smooth"
-              });
-            } catch (err) {
-              // fallback vieux navigateurs
-              window.scrollBy(0, 180);
-            }
-          }, 400);
+          // On veut que "Mode" soit environ à 1/4 de l'écran
+          const desiredOffset = window.innerHeight * 0.25;
+          let y = absoluteY - desiredOffset;
+          if (y < 0) y = 0;
+
+          try {
+            window.scrollTo({
+              top: y,
+              left: 0,
+              behavior: "smooth"
+            });
+          } catch (err) {
+            // fallback pour les vieux navigateurs
+            window.scrollTo(0, y);
+          }
         });
       }
-
-
-
 
 
 
