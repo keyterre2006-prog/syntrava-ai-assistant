@@ -1334,32 +1334,40 @@
             window.innerWidth <= 768 ||
             /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-          if (isMobile) {
-            e.preventDefault();
+          // Desktop : on laisse le lien #demo fonctionner normalement
+          if (!isMobile) {
+            return;
+          }
 
-            // On cible directement le bloc du chat
-            const target =
-              document.getElementById("demo-chat") ||
-              document.getElementById("chatWrapper") ||
-              document.getElementById("demo");
+          // Mobile : on gère le scroll à la main
+          e.preventDefault();
 
-            if (target) {
-              const rect = target.getBoundingClientRect();
+          const target =
+            document.getElementById("demo-chat") ||
+            document.getElementById("chatWrapper") ||
+            document.getElementById("demo");
 
-              // ✨ Gros décalage pour que le haut du chat soit plus bas dans l’écran
-              const OFFSET = 220; // tu peux monter à 250/280 si tu veux encore plus bas
-              let y = rect.top + window.scrollY - OFFSET;
-              if (y < 0) y = 0;
+          if (!target) return;
 
-              window.scrollTo({
-                top: y,
+          // 1) on scrolle jusqu'au chat (CSS scroll-behavior:smooth fera l’animation)
+          target.scrollIntoView();
+
+          // 2) petit décalage supplémentaire vers le bas pour voir la zone de saisie
+          setTimeout(() => {
+            try {
+              window.scrollBy({
+                top: 180, // augmente si tu veux descendre encore plus
+                left: 0,
                 behavior: "smooth"
               });
+            } catch (err) {
+              // fallback vieux navigateurs
+              window.scrollBy(0, 180);
             }
-          }
-          // Desktop : on laisse l'ancre #demo faire son job (pas de preventDefault)
+          }, 400);
         });
       }
+
 
 
 
