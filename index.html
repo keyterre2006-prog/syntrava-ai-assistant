@@ -1337,28 +1337,27 @@
           if (isMobile) {
             e.preventDefault();
 
-            // On vise en priorité la carte du chat (#demo-chat), sinon le titre (#demo)
+            // On vise d'abord tout le bloc démo (mode + chat)
             const target =
+              document.getElementById("chatWrapper") ||
               document.getElementById("demo-chat") ||
               document.getElementById("demo");
 
             if (target) {
-              // Scroll classique vers le chat
               target.scrollIntoView({
                 behavior: "smooth",
                 block: "start"
               });
 
-              // Petit décalage vers le haut après coup pour voir aussi le "Mode"
+              // Remonte un peu pour afficher aussi le "Mode"
               setTimeout(() => {
-                window.scrollBy(0, -80); // ajuste 80 si tu veux plus/moins
-              }, 300);
+                window.scrollBy(0, -120);
+              }, 400);
             }
           }
-          // Desktop : pas de preventDefault → le href="#demo" fonctionne normalement
         });
-
       }
+
 
       // ======== Affichage / masquage de la section légale (2 liens, 2 blocs) ========
       const legalSection = document.getElementById("legal");
