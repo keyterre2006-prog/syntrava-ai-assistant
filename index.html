@@ -1329,12 +1329,12 @@
       // ===== Scroll spécial mobile pour "Tester en direct" =====
       const heroDemoBtn = document.getElementById("heroDemoBtn");
       if (heroDemoBtn) {
-        heroDemoBtn.addEventListener("click", function (e) {
+        heroDemoBtn.addEventListener("click", (e) => {
           const isMobile =
             window.innerWidth <= 768 ||
             /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-          // Desktop : on laisse le lien #demo fonctionner normalement
+          // Desktop : on laisse le lien #demo faire son job normalement
           if (!isMobile) {
             return;
           }
@@ -1342,35 +1342,37 @@
           // Mobile : on gère le scroll nous-mêmes
           e.preventDefault();
 
-          // On vise directement le sélecteur "Mode"
-          const modeEl =
-            document.getElementById("mode") ||
+          // On vise d’abord le select "Mode"
+          const modeEl = document.getElementById("mode");
+          const fallback =
             document.getElementById("demo-chat") ||
             document.getElementById("chatWrapper") ||
             document.getElementById("demo");
 
-          if (!modeEl) return;
+          const target = modeEl || fallback;
+          if (!target) return;
 
-          const rect = modeEl.getBoundingClientRect();
+          const rect = target.getBoundingClientRect();
           const absoluteY = rect.top + window.scrollY;
 
-          // On veut que "Mode" soit environ à 1/4 de l'écran
-          const desiredOffset = window.innerHeight * 0.25;
+          // On veut que "Mode" soit environ au 1/4 de la hauteur d'écran
+          const desiredOffset = window.innerHeight * 0.25; // tu peux jouer sur 0.20 / 0.30
           let y = absoluteY - desiredOffset;
           if (y < 0) y = 0;
 
-          try {
+          // Compatibilité large : smooth si possible, sinon scroll normal
+          if ("scrollBehavior" in document.documentElement.style) {
             window.scrollTo({
               top: y,
               left: 0,
               behavior: "smooth"
             });
-          } catch (err) {
-            // fallback pour les vieux navigateurs
+          } else {
             window.scrollTo(0, y);
           }
         });
       }
+
 
 
 
