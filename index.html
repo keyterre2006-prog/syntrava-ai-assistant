@@ -1326,30 +1326,44 @@
         chatInitialized = true;
       }
 
-      // ===== Scroll pour "Tester en direct" (mobile + desktop) =====
+      // ===== Scroll pour "Tester en direct" (PC + mobile séparés) =====
       const heroDemoBtn = document.getElementById("heroDemoBtn");
       if (heroDemoBtn) {
         heroDemoBtn.addEventListener("click", (e) => {
-          e.preventDefault(); // on gère tout nous-mêmes
+          e.preventDefault(); // on gère le scroll nous-mêmes
 
           const isMobile =
             window.innerWidth <= 768 ||
             /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-          // On vise le wrapper complet (colonne "Mode" + chat)
-          const target =
-            document.getElementById("chatWrapper") ||
-            document.getElementById("demo-chat") ||
-            document.getElementById("demo");
+          if (isMobile) {
+            // 👉 Sur téléphone : on centre la carte du chat
+            const chatCard =
+              document.getElementById("demo-chat") ||
+              document.getElementById("chatWrapper");
 
-          if (!target) return;
+            if (chatCard) {
+              chatCard.scrollIntoView({
+                behavior: "smooth",
+                block: "center" // pour voir le Mode + la zone de saisie
+              });
+            }
+          } else {
+            // 👉 Sur PC : on vise le titre "Testez-le en direct 👇"
+            const demoHeading =
+              document.getElementById("demo") ||
+              document.getElementById("chatWrapper");
 
-          target.scrollIntoView({
-            behavior: "smooth",
-            block: isMobile ? "center" : "start"
-          });
+            if (demoHeading) {
+              demoHeading.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+              });
+            }
+          }
         });
       }
+
 
 
 
