@@ -1336,25 +1336,28 @@
 
           if (isMobile) {
             e.preventDefault();
+
             // On vise en priorité la carte du chat (#demo-chat), sinon le titre (#demo)
             const target =
               document.getElementById("demo-chat") ||
               document.getElementById("demo");
 
             if (target) {
-              const rect = target.getBoundingClientRect();
-              const offset = 80; // décalage vers le haut pour voir aussi le "Mode"
-              const y = Math.max(rect.top + window.scrollY - offset, 0);
-
-              window.scrollTo({
-                top: y,
-                behavior: "smooth"
+              // Scroll classique vers le chat
+              target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
               });
+
+              // Petit décalage vers le haut après coup pour voir aussi le "Mode"
+              setTimeout(() => {
+                window.scrollBy(0, -80); // ajuste 80 si tu veux plus/moins
+              }, 300);
             }
           }
-
-          // sur desktop => comportement normal (le href="#demo" fonctionne)
+          // Desktop : pas de preventDefault → le href="#demo" fonctionne normalement
         });
+
       }
 
       // ======== Affichage / masquage de la section légale (2 liens, 2 blocs) ========
