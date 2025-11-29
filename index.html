@@ -1326,51 +1326,43 @@
         chatInitialized = true;
       }
 
-      // ===== Scroll pour "Tester en direct" (PC + mobile séparés) =====
+      // ===== Scroll spécial pour "Tester en direct" =====
       const heroDemoBtn = document.getElementById("heroDemoBtn");
       if (heroDemoBtn) {
         heroDemoBtn.addEventListener("click", (e) => {
-          e.preventDefault(); // on gère le scroll nous-mêmes
-
           const isMobile =
             window.innerWidth <= 768 ||
             /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+          const chatSection = document.getElementById("demo-chat");
+          if (!chatSection) return;
+
           if (isMobile) {
-            // 👉 Sur téléphone : on centre la carte du chat
-            const chatCard =
-              document.getElementById("demo-chat") ||
-              document.getElementById("chatWrapper");
+            // 👉 On gère NOUS-MÊMES le scroll sur mobile
+            e.preventDefault();
 
-            if (chatCard) {
-              chatCard.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-              });
+            const rect = chatSection.getBoundingClientRect();
 
-              // ✨ Ajustement : remonter légèrement (vers le haut)
-              setTimeout(() => {
-                window.scrollBy({
-                  top: -90,  // monte légèrement (tu peux ajuster)
-                  behavior: "smooth"
-                });
-              }, 500); // laisse le temps au scrollIntoView de s’exécuter
-            }
+            // milieu de la carte du chat par rapport à la page
+            const middle = rect.top + window.scrollY + rect.height / 2;
+
+            // on veut que ce milieu soit au centre de l'écran,
+            // + un petit décalage vers le haut pour bien voir "Mode" + zone de saisie
+            const EXTRA_OFFSET = 40; // augmente à 60 si tu veux encore un peu plus haut
+            const targetY = middle - window.innerHeight / 2 - EXTRA_OFFSET;
+
+            window.scrollTo({
+              top: targetY < 0 ? 0 : targetY,
+              behavior: "smooth"
+            });
           } else {
-            // 👉 Sur PC : on vise le titre "Testez-le en direct 👇"
-            const demoHeading =
-              document.getElementById("demo") ||
-              document.getElementById("chatWrapper");
-
-            if (demoHeading) {
-              demoHeading.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-              });
-            }
+            // 👉 Desktop : scroll normal vers le titre "Testez-le en direct 👇"
+            // (on laisse le href="#demo" faire le boulot)
+            // donc PAS de preventDefault ici
           }
         });
       }
+
 
 
 
