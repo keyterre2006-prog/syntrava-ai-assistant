@@ -1082,7 +1082,7 @@
 
           <!-- Le chatbot (affiché par défaut) -->
           <div id="chatWrapper" class="shown">
-            <div class="grid">
+            <div id="demo-grid" class="grid">
               <!-- Colonne gauche -->
               <aside class="card side">
                 <span class="badge">🤖 Assistant IA • Démo</span>
@@ -1330,36 +1330,37 @@
       const heroDemoBtn = document.getElementById("heroDemoBtn");
       if (heroDemoBtn) {
         heroDemoBtn.addEventListener("click", (e) => {
+          e.preventDefault(); // on gère le scroll nous-mêmes
+
           const isMobile =
             window.innerWidth <= 768 ||
             /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-          const chatSection = document.getElementById("demo-chat");
-          if (!chatSection) return;
+          let targetEl;
+          let offset;
 
           if (isMobile) {
-            // 👉 On gère NOUS-MÊMES le scroll sur mobile
-            e.preventDefault();
-
-            const rect = chatSection.getBoundingClientRect();
-
-            // milieu de la carte du chat par rapport à la page
-            const middle = rect.top + window.scrollY + rect.height / 2;
-
-            // on veut que ce milieu soit au centre de l'écran,
-            // + un petit décalage vers le haut pour bien voir "Mode" + zone de saisie
-            const EXTRA_OFFSET = 40; // augmente à 60 si tu veux encore un peu plus haut
-            const targetY = middle - window.innerHeight / 2 - EXTRA_OFFSET;
-
-            window.scrollTo({
-              top: targetY < 0 ? 0 : targetY,
-              behavior: "smooth"
-            });
+            // 👉 Sur téléphone : viser la grille du chat (mode + chat)
+            targetEl =
+              document.getElementById("demo-grid") ||
+              document.getElementById("demo-chat");
+            offset = 60; // monte un chouia (augmente pour remonter plus)
           } else {
-            // 👉 Desktop : scroll normal vers le titre "Testez-le en direct 👇"
-            // (on laisse le href="#demo" faire le boulot)
-            // donc PAS de preventDefault ici
+            // 👉 Sur PC : viser le titre "Testez-le en direct 👇"
+            targetEl = document.getElementById("demo");
+            offset = 0; // pas de décalage
           }
+
+          if (!targetEl) return;
+
+          const rect = targetEl.getBoundingClientRect();
+          let y = rect.top + window.scrollY - offset;
+          if (y < 0) y = 0;
+
+          window.scrollTo({
+            top: y,
+            behavior: "smooth"
+          });
         });
       }
 
