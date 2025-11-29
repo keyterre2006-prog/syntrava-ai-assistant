@@ -1342,12 +1342,17 @@
               document.getElementById("demo");
 
             if (target) {
-              target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
+              const rect = target.getBoundingClientRect();
+              const offset = 80; // décalage vers le haut pour voir aussi le "Mode"
+              const y = Math.max(rect.top + window.scrollY - offset, 0);
+
+              window.scrollTo({
+                top: y,
+                behavior: "smooth"
               });
             }
           }
+
           // sur desktop => comportement normal (le href="#demo" fonctionne)
         });
       }
