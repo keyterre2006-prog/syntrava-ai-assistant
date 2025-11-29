@@ -871,6 +871,39 @@
       }
     }
 
+    /* Fix mode horizontal mobile : ne jamais forcer la hauteur */
+    @media (max-height: 480px) and (orientation: landscape) {
+      .chat {
+        height: auto !important;
+        min-height: 320px; /* garantit un espace utilisable */
+      }
+
+      .messages {
+        max-height: 50vh !important;
+      }
+    }
+
+    @media (max-height: 480px) and (orientation: landscape) {
+      .super-cta {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 16px !important;
+      }
+
+      .super-cta-actions {
+        width: 100% !important;
+        display: flex;
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
+
+      .super-cta-actions .cta {
+        width: 100% !important;
+        text-align: center !important;
+      }
+    }
+
+
   </style>
 </head>
 
