@@ -560,6 +560,30 @@
     .section .section-inner {
       overflow:hidden;
     }
+    .section-header-demo {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .section-header-demo h3 {
+      margin:0;
+    }
+
+    .section-header-demo .hint {
+      margin:4px 0 0 0;
+    }
+
+    @media (max-width: 700px) {
+      .section-header-demo {
+        align-items:flex-start;
+      }
+    }
+
+
+
 
     @media (max-width: 600px) {
       .chat {
@@ -883,10 +907,13 @@
             </div>
 
             <div class="hero-actions">
-              <!-- Le bouton est gardé pour style mais non nécessaire : on affiche le chat directement -->
-              <button id="openChat" class="cta" style="display:none">💬 Tester le chatbot</button>
-              <a href="#contact" class="cta" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px">
-                📩 Demander une démo
+              <!-- CTA principal : scroll vers la section démo -->
+              <a
+                href="#demo"
+                class="cta"
+                style="text-decoration:none; display:inline-flex; align-items:center; gap:6px"
+              >
+                💬 Tester en direct
               </a>
             </div>
           </div>
@@ -911,7 +938,7 @@
               <div class="hero-card-main">
                 <p>
                   <strong>Tickets répétitifs filtrés</strong><br>
-                  Horaires, suivi de commande, statuts de livraison… l’IA gère les questions simples en continu.
+                  Horaires, suivi de commande, statuts de livraisons… l’IA gère les questions simples en continu.
                 </p>
               </div>
               <div class="hero-card-side">
@@ -935,6 +962,7 @@
           </aside>
         </div>
       </section>
+
 
       <!-- ===== Benefits ===== -->
       <section class="section">
@@ -987,11 +1015,36 @@
       <!-- ===== Démo (chat) ===== -->
       <section class="section">
         <div class="section-inner">
-          <h3 id="demo">Testez-le en direct 👇</h3>
-          <p class="hint">
-            Essayez des questions types : "Quels sont vos horaires ?", "Comment suivre ma commande ?".<br>
-            À gauche, changez de <strong>mode</strong> pour voir différents exemples (cabinet, coach, ton pro, etc.).
-          </p>
+
+          <div class="section-header-demo">
+            <div>
+              <h3 id="demo">Testez-le en direct 👇</h3>
+              <p class="hint">
+                Essayez des questions types : "Quels sont vos horaires ?", "Comment suivre ma commande ?".<br>
+                À gauche, changez de <strong>mode</strong> pour voir différents exemples.
+              </p>
+            </div>
+
+            <!-- bouton top-right UNIQUE -->
+            <a
+              href="#contact"
+              class="cta"
+              style="
+                text-decoration:none;
+                font-size:15px;
+                padding:14px 22px;
+                white-space:nowrap;
+              "
+            >
+              📩 Demander un essai / une démo
+            </a>
+
+          </div>
+
+          <!-- 🔽 ici tu laisses comme avant : -->
+          <!-- <div id="chatWrapper" class="shown"> ... -->
+
+
 
           <!-- Le chatbot (affiché par défaut) -->
           <div id="chatWrapper" class="shown">
