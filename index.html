@@ -1245,59 +1245,65 @@
       <section id="legal" class="section" style="display:none">
         <div class="section-inner">
 
-            <!-- MENTIONS LÉGALES -->
+          <!-- MENTIONS LÉGALES -->
+          <div id="mentions-block">
             <h3 id="mentions">Mentions légales</h3>
             <p class="hint">
-            <strong>Site :</strong> syntrava-ai-assistant<br>
-            <strong>Éditeur :</strong> SYNTRAVA<br>
-            <strong>Email de contact :</strong> syntrava.dev@gmail.com<br><br>
+              <strong>Site :</strong> syntrava-ai-assistant<br>
+              <strong>Éditeur :</strong> SYNTRAVA<br>
+              <strong>Email de contact :</strong> syntrava.dev@gmail.com<br><br>
 
-            <strong>Droits d’auteur :</strong><br>
-            L’ensemble du contenu du site (texte, design, logo, code) est protégé par le droit d’auteur.<br>
-            Toute reproduction, diffusion ou modification sans autorisation est interdite.<br><br>
+              <strong>Droits d’auteur :</strong><br>
+              L’ensemble du contenu du site (texte, design, logo, code) est protégé par le droit d’auteur.<br>
+              Toute reproduction, diffusion ou modification sans autorisation est interdite.<br><br>
 
-            <strong>Responsabilité :</strong><br>
-            Le site et le chatbot fournissent des informations générées automatiquement.  
-            Malgré tous les efforts pour garantir l'exactitude, aucune garantie n’est donnée.  
-            L’utilisateur reste responsable de la vérification des informations fournies.<br><br>
+              <strong>Responsabilité :</strong><br>
+              Le site et le chatbot fournissent des informations générées automatiquement.  
+              Malgré tous les efforts pour garantir l'exactitude, aucune garantie n’est donnée.  
+              L’utilisateur reste responsable de la vérification des informations fournies.<br><br>
             </p>
+          </div>
 
-            <!-- POLITIQUE DE CONFIDENTIALITÉ -->
+          <!-- POLITIQUE DE CONFIDENTIALITÉ -->
+          <div id="rgpd-block">
             <h3 id="rgpd" style="margin-top:16px">Politique de confidentialité (RGPD)</h3>
             <p class="hint">
 
-                <strong>1. Données collectées</strong><br>
-                • Le chatbot ne stocke aucune donnée personnelle ni l’historique des conversations.<br>
-                • Le formulaire de contact peut collecter votre email et message.<br>
-                • Ces données servent uniquement à vous répondre.<br><br>
+              <strong>1. Données collectées</strong><br>
+              • Le chatbot ne stocke aucune donnée personnelle ni l’historique des conversations.<br>
+              • Le formulaire de contact peut collecter votre email et message.<br>
+              • Ces données servent uniquement à vous répondre.<br><br>
 
-                <strong>2. Utilisation des données</strong><br>
-                • Réponse aux demandes envoyées via le formulaire.<br>
-                • Statistiques anonymes de fréquentation du site.<br><br>
+              <strong>2. Utilisation des données</strong><br>
+              • Réponse aux demandes envoyées via le formulaire.<br>
+              • Statistiques anonymes de fréquentation du site.<br><br>
 
-                <strong>3. Stockage et durée</strong><br>
-                • Aucune base de données interne n’est utilisée pour le chatbot.<br>
-                • Les emails restent dans la boîte de réception le temps du traitement.<br><br>
+              <strong>3. Stockage et durée</strong><br>
+              • Aucune base de données interne n’est utilisée pour le chatbot.<br>
+              • Les emails restent dans la boîte de réception le temps du traitement.<br><br>
 
-                <strong>4. Partage des données</strong><br>
-                • Aucune donnée n'est vendue ou partagée à des tiers.<br><br>
+              <strong>4. Partage des données</strong><br>
+              • Aucune donnée n'est vendue ou partagée à des tiers.<br><br>
 
-                <strong>5. Vos droits (RGPD)</strong><br>
-                • Accès, correction, suppression, opposition.<br>
-                • Pour exercer ces droits, contactez :  
-                <a href="mailto:syntrava.dev@gmail.com" style="color:var(--primary-soft)">syntrava.dev@gmail.com</a><br><br>
+              <strong>5. Vos droits (RGPD)</strong><br>
+              • Accès, correction, suppression, opposition.<br>
+              • Pour exercer ces droits, contactez :  
+              <a href="mailto:syntrava.dev@gmail.com" style="color:var(--primary-soft)">syntrava.dev@gmail.com</a><br><br>
 
-                <strong>6. Cookies</strong><br>
-                • Uniquement des cookies techniques indispensables.<br>
-                • Aucun cookie publicitaire ou de tracking.<br><br>
+              <strong>6. Cookies</strong><br>
+              • Uniquement des cookies techniques indispensables.<br>
+              • Aucun cookie publicitaire ou de tracking.<br><br>
 
-                <strong>7. Responsabilité du chatbot</strong><br>
-                • Les réponses générées automatiquement peuvent contenir des erreurs.<br>
-                • L’utilisateur doit vérifier les informations sensibles.<br><br>
+              <strong>7. Responsabilité du chatbot</strong><br>
+              • Les réponses générées automatiquement peuvent contenir des erreurs.<br>
+              • L’utilisateur doit vérifier les informations sensibles.<br><br>
 
             </p>
+          </div>
+
         </div>
-      </section>    
+      </section>
+         
     </div>
   </div>
 
@@ -1346,50 +1352,84 @@
         });
       }
 
-      // ======== Affichage / masquage de la section légale (2 liens) ========
+      // ======== Affichage / masquage de la section légale (2 liens, 2 blocs) ========
       const legalSection = document.getElementById("legal");
       const legalLinks = document.querySelectorAll(".legal-link");
+      const mentionsBlock = document.getElementById("mentions-block");
+      const rgpdBlock = document.getElementById("rgpd-block");
 
-      if (legalSection && legalLinks.length > 0) {
-        legalSection.style.display = "none"; // on la cache par défaut
+      let currentLegalTarget = null; // "mentions" ou "rgpd"
+
+      if (legalSection && legalLinks.length > 0 && mentionsBlock && rgpdBlock) {
+        legalSection.style.display = "none"; // on cache par défaut
+        mentionsBlock.style.display = "none";
+        rgpdBlock.style.display = "none";
 
         legalLinks.forEach((link) => {
           link.addEventListener("click", (e) => {
             e.preventDefault();
 
             const targetId = link.getAttribute("data-target"); // "mentions" ou "rgpd"
-            const targetEl = targetId ? document.getElementById(targetId) : null;
+            if (!targetId) return;
 
             const isHidden =
               legalSection.style.display === "none" ||
               legalSection.style.display === "";
 
+            // Si la section est cachée → on l'affiche avec le bon bloc
             if (isHidden) {
-              // On affiche la section
               legalSection.style.display = "block";
 
-              // On laisse un petit délai pour recalculer la mise en page avant de scroller
+              if (targetId === "mentions") {
+                mentionsBlock.style.display = "block";
+                rgpdBlock.style.display = "none";
+              } else {
+                mentionsBlock.style.display = "none";
+                rgpdBlock.style.display = "block";
+              }
+
+              currentLegalTarget = targetId;
+
+              // petit délai avant scroll pour laisser le layout se mettre à jour
               setTimeout(() => {
-                if (targetEl) {
-                  targetEl.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                  });
-                } else {
-                  legalSection.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                  });
-                }
+                const targetEl = document.getElementById(targetId);
+                (targetEl || legalSection).scrollIntoView({
+                  behavior: "smooth",
+                  block: "start"
+                });
               }, 30);
             } else {
-              // Si déjà visible -> on cache
-              legalSection.style.display = "none";
+              // Section déjà visible
+              if (currentLegalTarget === targetId) {
+                // on reclique sur le même lien → on ferme tout
+                legalSection.style.display = "none";
+                mentionsBlock.style.display = "none";
+                rgpdBlock.style.display = "none";
+                currentLegalTarget = null;
+              } else {
+                // on passe de Mentions à RGPD ou l'inverse
+                if (targetId === "mentions") {
+                  mentionsBlock.style.display = "block";
+                  rgpdBlock.style.display = "none";
+                } else {
+                  mentionsBlock.style.display = "none";
+                  rgpdBlock.style.display = "block";
+                }
+                currentLegalTarget = targetId;
+
+                setTimeout(() => {
+                  const targetEl = document.getElementById(targetId);
+                  (targetEl || legalSection).scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                  });
+                }, 30);
+              }
             }
           });
         });
       }
-    });
+    }); // 👈 ICI on ferme bien le DOMContentLoaded
 
     // ======== Logique du chat ========
     function initChat() {
@@ -1560,6 +1600,7 @@
       });
     }
   </script>
+
 
 
 </body>
