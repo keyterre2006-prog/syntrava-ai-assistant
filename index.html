@@ -1344,19 +1344,25 @@
               document.getElementById("demo");
 
             if (target) {
+              // 1) on amène le bloc en haut de l'écran
               target.scrollIntoView({
                 behavior: "smooth",
                 block: "start"
               });
 
-              // Ajustement fin : on remonte légèrement mais pas trop
+              // 2) une fois le scroll fini, on descend encore un peu
               setTimeout(() => {
-                window.scrollBy(0, -40); // ← ajuste ici si besoin
-              }, 400);
+                window.scrollBy({
+                  top: 170,          // ← ajuste si tu veux plus/moins
+                  behavior: "smooth"
+                });
+              }, 500);               // délai pour laisser le premier scroll se faire
             }
           }
+          // Desktop : le href="#demo" fait le boulot
         });
       }
+
 
 
 
