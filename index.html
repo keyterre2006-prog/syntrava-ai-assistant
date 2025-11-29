@@ -942,6 +942,7 @@
             <div class="hero-actions">
               <!-- CTA principal : scroll vers la section démo -->
               <a
+                id="heroDemoBtn"
                 href="#demo"
                 class="cta"
                 style="text-decoration:none; display:inline-flex; align-items:center; gap:6px"
@@ -1123,7 +1124,7 @@
               </aside>
 
               <!-- Colonne droite (chat) -->
-              <section class="card chat" aria-live="polite">
+              <section id="demo-chat" class="card chat" aria-live="polite">
                 <div class="chat-header">
                   <h2>Assistant IA</h2>
                   <div class="status">
@@ -1236,8 +1237,8 @@
       <footer>
         <div>Made with 💜 — SYNTRAVA</div>
         <div style="display:flex; gap:12px">
-          <a href="#legal" class="legal-link">Mentions</a>
-          <a href="#legal" class="legal-link">Politique RGPD</a>
+          <a href="#mentions" class="legal-link" data-target="mentions">Mentions</a>
+          <a href="#rgpd" class="legal-link" data-target="rgpd">Politique RGPD</a>
         </div>
       </footer>
 
@@ -1245,7 +1246,7 @@
         <div class="section-inner">
 
             <!-- MENTIONS LÉGALES -->
-            <h3>Mentions légales</h3>
+            <h3 id="mentions">Mentions légales</h3>
             <p class="hint">
             <strong>Site :</strong> syntrava-ai-assistant<br>
             <strong>Éditeur :</strong> SYNTRAVA<br>
@@ -1262,7 +1263,7 @@
             </p>
 
             <!-- POLITIQUE DE CONFIDENTIALITÉ -->
-            <h3 style="margin-top:16px">Politique de confidentialité (RGPD)</h3>
+            <h3 id="rgpd" style="margin-top:16px">Politique de confidentialité (RGPD)</h3>
             <p class="hint">
 
                 <strong>1. Données collectées</strong><br>
@@ -1311,6 +1312,7 @@
     let conversationHistory = [];
 
     document.addEventListener("DOMContentLoaded", () => {
+      // Afficher le chat par défaut
       if (openChatBtn) openChatBtn.style.display = "none";
       if (chatWrapper) chatWrapper.classList.add("shown");
       if (!chatInitialized) {
@@ -1318,22 +1320,75 @@
         chatInitialized = true;
       }
 
-      // ======== Affichage / masquage de la section légale ========
+      // ===== Scroll spécial mobile pour "Tester en direct" =====
+      const heroDemoBtn = document.getElementById("heroDemoBtn");
+      if (heroDemoBtn) {
+        heroDemoBtn.addEventListener("click", (e) => {
+          const isMobile =
+            window.innerWidth <= 768 ||
+            /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+          if (isMobile) {
+            e.preventDefault();
+            // On vise en priorité la carte du chat (#demo-chat), sinon le titre (#demo)
+            const target =
+              document.getElementById("demo-chat") ||
+              document.getElementById("demo");
+
+            if (target) {
+              target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+              });
+            }
+          }
+          // sur desktop => comportement normal (le href="#demo" fonctionne)
+        });
+      }
+
+      // ======== Affichage / masquage de la section légale (2 liens) ========
       const legalSection = document.getElementById("legal");
       const legalLinks = document.querySelectorAll(".legal-link");
 
-      legalLinks.forEach((link) => {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
+      if (legalSection && legalLinks.length > 0) {
+        legalSection.style.display = "none"; // on la cache par défaut
 
-          const isHidden = legalSection.style.display === "none" || legalSection.style.display === "";
-          legalSection.style.display = isHidden ? "block" : "none";
+        legalLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
 
-          if (isHidden) {
-            legalSection.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
+            const targetId = link.getAttribute("data-target"); // "mentions" ou "rgpd"
+            const targetEl = targetId ? document.getElementById(targetId) : null;
+
+            const isHidden =
+              legalSection.style.display === "none" ||
+              legalSection.style.display === "";
+
+            if (isHidden) {
+              // On affiche la section
+              legalSection.style.display = "block";
+
+              // On laisse un petit délai pour recalculer la mise en page avant de scroller
+              setTimeout(() => {
+                if (targetEl) {
+                  targetEl.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                  });
+                } else {
+                  legalSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                  });
+                }
+              }, 30);
+            } else {
+              // Si déjà visible -> on cache
+              legalSection.style.display = "none";
+            }
+          });
         });
-      });
+      }
     });
 
     // ======== Logique du chat ========
@@ -1393,10 +1448,30 @@
 
       // Cartouche de gauche dynamique
       const tenants = {
-        pro:          { name:"Assistant Pro",            price:"—",          hours:"—",                      channels:"—" },
-        chaleureux:   { name:"Assistant Chaleureux",    price:"—",          hours:"—",                      channels:"—" },
-        coach:        { name:"Sophie Martin • Coaching", price:"80€ / h",  hours:"Lun–Ven 9h–18h",         channels:"Visio & présentiel (Lyon)" },
-        cabinet_osteo:{ name:"Cabinet Ostéo Duval",     price:"65€ / séance", hours:"Lun–Sam matin",       channels:"Présentiel • Bruxelles" }
+        pro: {
+          name: "Assistant Pro",
+          price: "—",
+          hours: "—",
+          channels: "—"
+        },
+        chaleureux: {
+          name: "Assistant Chaleureux",
+          price: "—",
+          hours: "—",
+          channels: "—"
+        },
+        coach: {
+          name: "Sophie Martin • Coaching",
+          price: "80€ / h",
+          hours: "Lun–Ven 9h–18h",
+          channels: "Visio & présentiel (Lyon)"
+        },
+        cabinet_osteo: {
+          name: "Cabinet Ostéo Duval",
+          price: "65€ / séance",
+          hours: "Lun–Sam matin",
+          channels: "Présentiel • Bruxelles"
+        }
       };
 
       const nameEl = document.getElementById("tenantName");
@@ -1441,7 +1516,7 @@
         showTyping();
         try {
           const res = await fetch("/api/chat", {
-            method:"POST",
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
               "X-Syntrava-Client": "syntrava-vitrine-1"
@@ -1485,6 +1560,7 @@
       });
     }
   </script>
+
 
 </body>
 </html>
