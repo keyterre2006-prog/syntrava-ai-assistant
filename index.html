@@ -1326,35 +1326,31 @@
         chatInitialized = true;
       }
 
-      // ===== Scroll pour "Tester en direct" (Mode + zone de chat visibles) =====
+      // ===== Scroll pour "Tester en direct" (mobile + desktop) =====
       const heroDemoBtn = document.getElementById("heroDemoBtn");
       if (heroDemoBtn) {
         heroDemoBtn.addEventListener("click", (e) => {
-          e.preventDefault();
+          e.preventDefault(); // on gère tout nous-mêmes
 
-          // On vise en priorité le sélecteur "Mode"
+          const isMobile =
+            window.innerWidth <= 768 ||
+            /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+          // On vise le wrapper complet (colonne "Mode" + chat)
           const target =
-            document.getElementById("mode") ||
+            document.getElementById("chatWrapper") ||
             document.getElementById("demo-chat") ||
             document.getElementById("demo");
 
           if (!target) return;
 
-          // 1) on aligne "Mode" en haut de l'écran
           target.scrollIntoView({
             behavior: "smooth",
-            block: "start"
+            block: isMobile ? "center" : "start"
           });
-
-          // 2) puis on descend encore un peu pour bien voir la zone "Pose ta question / Envoyer"
-          setTimeout(() => {
-            window.scrollBy({
-              top: 60,          // tu peux tester 60 / 100 si tu veux ajuster finement
-              behavior: "smooth"
-            });
-          }, 400);              // laisse le temps au premier scroll de se finir
         });
       }
+
 
 
       // ======== Affichage / masquage de la section légale (2 liens, 2 blocs) ========
